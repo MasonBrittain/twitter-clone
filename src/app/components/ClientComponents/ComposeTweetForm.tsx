@@ -11,11 +11,12 @@ type ComposeTweetFormProps = {
 const ComposeTweetForm = ({ serverAction }: ComposeTweetFormProps) => {
   const resetRef = useRef<HTMLButtonElement>(null);
 
-  const handleSubmitTweet = async (data: any) => {
+  const handleSubmitTweet = async (formData: FormData) => {
     try {
-      const res = await serverAction(data);
+      const res = await serverAction(formData);
       if (res?.error) {
-        return toast.error(res.error.message);
+        toast.error(res.error.message);
+        return;
       }
       toast.success("Tweet sent successfully!");
       resetRef.current?.click();

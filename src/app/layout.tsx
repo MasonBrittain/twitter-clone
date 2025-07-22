@@ -1,7 +1,7 @@
-import LeftSidebar from "@/components/left-sidebar";
+import LeftSidebar from "@/components/LeftSidebar";
 import "./globals.css";
 import SupabaseProvider from "./supabase-provider";
-import RightSection from "@/components/right-section";
+import RightSection from "@/components/RightSection";
 
 export const metadata = {
   title: "Create Next App",

@@ -2,7 +2,7 @@
 
 import React, { useContext, useEffect, useState, useTransition } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useSupabase } from "@/app/supabase-provider";
+import { useSupabase } from "@/supabase-provider";
 import { toast } from "sonner";
 import { nanoid } from "nanoid";
 import { saveNewAvatar } from "@/lib/supabase/mutation";

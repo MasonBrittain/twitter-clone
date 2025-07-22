@@ -1,5 +1,5 @@
-import ProfileAvatar from "@/components/client-components/profile-avatar";
-import Tweet from "@/components/client-components/tweet";
+import ProfileAvatar from "@/components/ClientComponents/ProfileAvatar";
+import Tweet from "@/components/ClientComponents/Tweet";
 import { getTweets } from "@/lib/supabase/queries";
 import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { cookies, headers } from "next/headers";

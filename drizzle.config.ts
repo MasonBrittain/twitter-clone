@@ -1,7 +1,8 @@
 import type { Config } from "drizzle-kit";
+import { run } from "node:test";
 
 export default {
-  schema: "./src/lib/db/schema.ts",
+  schema: "./src/app/lib/db/schema.ts",
   out: "./drizzle",
-  driver: "pg",
+  dialect: "postgresql"
 } satisfies Config;
