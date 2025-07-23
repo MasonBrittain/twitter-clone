@@ -9,12 +9,12 @@ import { IoShareOutline, IoStatsChart } from "react-icons/io5";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
-import LikeButton from "./like-button";
-import { Profile, Tweet } from "@/lib/db/schema";
+import LikeButton from "./LikeButton";
+import type { Profile, Tweet } from "@/lib/db/schema";
 
-import ReplyDialog from "./reply-dialog";
+import ReplyDialog from "./ReplyDialog";
 import { useRouter } from "next/navigation";
-import ProfileAvatar from "./profile-avatar";
+import ProfileAvatar from "./ProfileAvatar";
 
 dayjs.extend(relativeTime);
 

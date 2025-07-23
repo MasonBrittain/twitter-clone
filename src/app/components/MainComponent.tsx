@@ -1,7 +1,7 @@
-import ComposeTweet from "./server-components/compose-tweet";
+import ComposeTweet from "./ServerComponents/ComposeTweet";
 
 import { getTweets } from "@/lib/supabase/queries";
-import Tweet from "./client-components/tweet";
+import Tweet from "./ClientComponents/Tweet";
 import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-nextjs";
 import { cookies, headers } from "next/headers";
 

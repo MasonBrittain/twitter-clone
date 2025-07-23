@@ -1,4 +1,4 @@
-import Tweet from "@/components/client-components/tweet";
+import Tweet from "@/components/ClientComponents/Tweet";
 import { db } from "@/lib/db";
 import { likes, profiles, replies, tweets } from "@/lib/db/schema";
 import React from "react";
@@ -28,8 +28,7 @@ const TweetPage = async ({ params }: { params: { id: string } }) => {
   }
 
   const repliesRes = await getTweets({
-    currentUserID: userData.user?.id,
-    orderBy: true,
+      currentUserID: userData.user?.id,
     replyId: tweet[0].tweet.id,
   });
 

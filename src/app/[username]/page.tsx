@@ -43,7 +43,13 @@ const UserProfilePage = async ({
       <div className="flex flex-col font-bold p-6 backdrop-blur bg-black/10 sticky top-0">
         <ProfileAvatar
           username={params.username}
-          avatarUrl={getUserTweets ? getUserTweets[0].profile.avatarUrl : null}
+          avatarUrl={
+            getUserTweets &&
+            getUserTweets.length > 0 &&
+            getUserTweets[0]?.profile?.avatarUrl
+              ? getUserTweets[0].profile.avatarUrl
+              : null
+          }
         />
         <h1 className="text-lg">
           {userData.user?.user_metadata?.username || "Profile"}

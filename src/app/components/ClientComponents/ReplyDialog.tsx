@@ -9,7 +9,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 
 import { Profile, Tweet } from "@/lib/db/schema";
 import { Input } from "../ui/input";
-import { useSupabase } from "@/app/supabase-provider";
+import { useSupabase } from "@/supabase-provider";
 import { toast } from "sonner";
 import { reply } from "@/lib/supabase/mutation";
 
@@ -88,7 +88,7 @@ const ReplyDialog = ({ tweet, repliesCount }: ReplyDialogProps) => {
               onClick={() => {
                 supabase.auth
                   .getUser()
-                  .then((res) => {
+                  .then((res: { data: { user: any } }) => {
                     if (res.data && res.data.user) {
                       const user = res.data.user;
                       startTransition(() => {

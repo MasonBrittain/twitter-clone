@@ -1,6 +1,6 @@
 "use server";
 
-import { Database } from "../supabase.types";
+import { Database } from "../database.types";
 import { supabaseServer } from ".";
 import { db } from "../db";
 import {
@@ -24,20 +24,41 @@ export type TweetType = Database["public"]["Tables"]["tweets"]["Row"] & {
 export const getTweets = async ({
   currentUserID,
   getSingleTweetId,
-  limit,
-  orderBy,
+    limit,
   replyId,
   profileUsername,
 }: {
   currentUserID?: string;
-  getSingleTweetId?: string;
-  orderBy?: boolean;
+    getSingleTweetId?: string;
   limit?: number;
   replyId?: string;
   profileUsername?: string;
 }) => {
   try {
-    let query = db
+    // Build all WHERE conditions first
+    const conditions = [];
+
+    if (getSingleTweetId) {
+      conditions.push(eq(tweets.id, getSingleTweetId));
+    }
+
+    if (replyId) {
+      conditions.push(eq(tweets.replyId, replyId));
+      conditions.push(eq(tweets.isReply, true));
+    } else {
+      conditions.push(eq(tweets.isReply, false));
+    }
+
+    if (profileUsername) {
+      conditions.push(eq(profiles.username, profileUsername));
+      // Only show non-replies for profile pages unless specifically looking for replies
+      if (!replyId) {
+        conditions.push(eq(tweets.isReply, false));
+      }
+    }
+
+    // Build the complete query in one chain to avoid TypeScript issues
+    const baseQuery = db
       .select({
         tweets,
         profiles,
@@ -59,36 +80,17 @@ export const getTweets = async ({
         likes,
         tweetsReplies,
       })
-      .from(tweets)
-      .where(eq(tweets.isReply, Boolean(replyId)))
+        .from(tweets)
       .leftJoin(likes, eq(tweets.id, likes.tweetId))
       .leftJoin(tweetsReplies, eq(tweets.id, tweetsReplies.replyId))
-      .innerJoin(profiles, eq(tweets.profileId, profiles.id))
-      .orderBy(desc(tweets.createdAt));
+      .innerJoin(profiles, eq(tweets.profileId, profiles.id));
 
-    if (orderBy) {
-      query = query.orderBy(desc(tweets.createdAt));
-    }
-
-    if (getSingleTweetId) {
-      query = query.where(eq(tweets.id, getSingleTweetId));
-    }
-
-    if (limit) {
-      query = query.limit(limit);
-    }
-
-    if (replyId) {
-      query = query.where(eq(tweets.replyId, replyId));
-    }
-
-    if (profileUsername) {
-      query = query.where(
-        and(eq(profiles.username, profileUsername), eq(tweets.isReply, false))
-      );
-    }
-
-    const rows = await query;
+    // Execute the complete query with all conditions at once
+    const rows = await baseQuery
+      .$dynamic()
+      .where(conditions.length > 0 ? and(...conditions) : undefined)
+      .orderBy(desc(tweets.createdAt))
+      .limit(limit || 50);
 
     if (rows) {
       const result = rows.reduce<
@@ -120,21 +122,19 @@ export const getTweets = async ({
         }
 
         if (like) {
-          acc[tweet.id].likes.push(like);
-          const ids = acc[tweet.id].likes.map(({ id }) => id);
-          const filteredLikesArr = acc[tweet.id].likes.filter(
-            ({ id }, index) => !ids.includes(id, index + 1)
-          );
-          acc[tweet.id].likes = filteredLikesArr;
+          // Check if this like is already added to avoid duplicates
+          const likeExists = acc[tweet.id].likes.some(existingLike => existingLike.id === like.id);
+          if (!likeExists) {
+            acc[tweet.id].likes.push(like);
+          }
         }
 
         if (reply) {
-          acc[tweet.id].replies.push(reply);
-          const ids = acc[tweet.id].replies.map(({ id }) => id);
-          const filteredRepliesArr = acc[tweet.id].replies.filter(
-            ({ id }, index) => !ids.includes(id, index + 1)
-          );
-          acc[tweet.id].replies = filteredRepliesArr;
+          // Check if this reply is already added to avoid duplicates
+          const replyExists = acc[tweet.id].replies.some(existingReply => existingReply.id === reply.id);
+          if (!replyExists) {
+            acc[tweet.id].replies.push(reply as Tweet);
+          }
         }
 
         return acc;
@@ -143,9 +143,11 @@ export const getTweets = async ({
       const data = Object.values(result);
       return data;
     }
+
+    return [];
   } catch (error) {
     console.log(error);
-    // return { error: "something wrong with querying the db" };
+    return [];
   }
 };
 

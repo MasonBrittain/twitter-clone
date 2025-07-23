@@ -1,8 +1,10 @@
-import type { Config } from "drizzle-kit";
-import { run } from "node:test";
+  import type { Config } from "drizzle-kit";
 
 export default {
   schema: "./src/app/lib/db/schema.ts",
   out: "./drizzle",
-  dialect: "postgresql"
-} satisfies Config;
+  dialect: "postgresql",
+  dbCredentials: {
+    url: process.env.DATABASE_URL!,
+  },
+  } satisfies Config;

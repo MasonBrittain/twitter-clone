@@ -5,7 +5,7 @@ import { randomUUID } from "crypto";
 import { SupabaseClient } from "@supabase/supabase-js";
 
 import { revalidatePath } from "next/cache";
-import ComposeTweetForm from "../client-components/compose-tweet-form";
+import ComposeTweetForm from "../ClientComponents/ComposeTweetForm";
 import { db } from "@/lib/db";
 import { tweets } from "@/lib/db/schema";
 
