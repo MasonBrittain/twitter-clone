@@ -72,7 +72,7 @@
 
 @layer base {
   * {
-    @apply border-border/20; /* Much more subtle border */
+    @apply border-border/20; /* Apply a light border to all elements */
   }
   
   body {
