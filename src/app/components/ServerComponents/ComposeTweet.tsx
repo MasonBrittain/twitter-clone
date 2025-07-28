@@ -3,7 +3,6 @@ import { createServerComponentSupabaseClient } from "@supabase/auth-helpers-next
 import { cookies, headers } from "next/headers";
 import { randomUUID } from "crypto";
 import { SupabaseClient } from "@supabase/supabase-js";
-
 import { revalidatePath } from "next/cache";
 import ComposeTweetForm from "../ClientComponents/ComposeTweetForm";
 import { db } from "@/lib/db";

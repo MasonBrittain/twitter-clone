@@ -40,7 +40,19 @@ export const tweets = pgTable("tweets", {
   isReply: boolean("is_reply").notNull().default(false),
   replyId: uuid("reply_id").references((): AnyPgColumn => tweets.id),
 });
-
+export const tweetsIndexes = pgTable("tweets", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  text: text("text").notNull(),
+  profileId: uuid("profile_id")
+    .notNull()
+    .references(() => profiles.id),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  isReply: boolean("is_reply").notNull().default(false),
+  replyId: uuid("reply_id").references((): AnyPgColumn => tweets.id),
+}, (tweets) => ({
+  profileIdIndex: uniqueIndex("tweets__profile_id__idx").on(tweets.profileId),
+}));
 export type Tweet = InferModel<typeof tweets>;
 
 export const tweetsReplies = alias(tweets, "tweets_replies");

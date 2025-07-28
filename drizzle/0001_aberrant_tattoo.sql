@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "tweets__profile_id__idx" ON "tweets" USING btree ("profile_id");
