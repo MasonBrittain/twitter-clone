@@ -51,10 +51,6 @@ export const getTweets = async ({
 
     if (profileUsername) {
       conditions.push(eq(profiles.username, profileUsername));
-      // Only show non-replies for profile pages unless specifically looking for replies
-      if (!replyId) {
-        conditions.push(eq(tweets.isReply, false));
-      }
     }
 
     // Build the complete query in one chain to avoid TypeScript issues
@@ -143,8 +139,6 @@ export const getTweets = async ({
       const data = Object.values(result);
       return data;
     }
-
-    return [];
   } catch (error) {
     console.log(error);
     return [];
